@@ -1,0 +1,7 @@
+Śrīla Prabhupāda Ślokas — App 2 (English development build)
+
+Independent PWA based technically on Memoriza Slokas.
+Source: Bhaktivedanta Archives compilation in the supplied PDF.
+Current dataset: 879 parsed candidate entries across all 19 source categories.
+This is a development build: extraction QA is still in progress before final user testing.
+App 1 is not modified.

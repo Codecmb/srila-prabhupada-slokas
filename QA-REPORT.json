@@ -1,0 +1,17 @@
+{
+  "status": "English complete; Spanish source-matched portion merged",
+  "total_entries": 879,
+  "categories": 19,
+  "english_complete": 879,
+  "spanish_complete": 144,
+  "spanish_remaining": 735,
+  "checks": [
+    "verses.json valid",
+    "manifest.json valid",
+    "inline JavaScript syntax valid",
+    "19 categories present",
+    "srila-prabhupada.png present",
+    "independent IndexedDB name present"
+  ],
+  "note": "Spanish text was only merged where a matching previously translated verse existed; missing Spanish was not fabricated."
+}
