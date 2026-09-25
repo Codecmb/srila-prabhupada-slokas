@@ -178,6 +178,8 @@ rel="noopener noreferrer"></a>
 <div class="group-content rec-row">
 <button id="record">🎙 Grabar mi voz</button>
 <button id="exportRecording">↗ Exportar audio</button>
+<button id="importRecording">↙ Importar audio</button>
+<input id="importRecordingFile" type="file" hidden>
 <button id="deleteRecording">🗑 Borrar grabación</button>
 </div>
 </div>
@@ -985,6 +987,38 @@ async function exportRecording(){
    URL.revokeObjectURL(url);
  },1000);
 }
+async function importRecording(){
+ const input=$("importRecordingFile");
+ input.value="";
+ input.click();
+}
+
+async function handleImportedRecording(){
+ const input=$("importRecordingFile");
+ const file=input.files && input.files[0];
+ if(!file) return;
+
+ const isAudioType=file.type && file.type.startsWith("audio/");
+ const isAudioExtension=/\.(webm|m4a|mp3|wav|ogg|aac|mp4)$/i.test(file.name);
+
+ if(!isAudioType && !isAudioExtension){
+   alert("El archivo seleccionado no es un audio.");
+   input.value="";
+   return;
+ }
+
+ try{
+   stopEverything();
+   await saveRecording(currentRank,file);
+   await refreshAudioStatus();
+   alert("Audio importado para este verso.");
+ }catch(e){
+   alert("No se pudo importar el audio: "+e.message);
+ }
+
+ input.value="";
+}
+
 async function deleteRecording(){
  const personal=await getRecording(currentRank);
 
@@ -1051,6 +1085,8 @@ $("play").onclick=playCurrent;
 $("stop").onclick=stopEverything;
 $("record").onclick=toggleRecording;
 $("exportRecording").onclick=exportRecording;
+$("importRecording").onclick=importRecording;
+$("importRecordingFile").onchange=handleImportedRecording;
 $("deleteRecording").onclick=deleteRecording;
 $("memorize").onclick=memorize;
 
