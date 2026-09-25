@@ -560,7 +560,7 @@ function automaticVerseUrl(source){
  const lang=currentLanguage==="es" ? "es" : "en";
 
  // Bhagavad-gita: Bg 2.13
- let m=s.match(/^Bg\s+(\d+)\.(\d+)$/i);
+ let m=s.match(/^(?:Bg|Bhagavad-gītā|Bhagavad-gita)\s+(\d+)\.(\d+)$/i);
  if(m)
    return "https://vedabase.io/"+lang+"/library/bg/"+m[1]+"/"+m[2]+"/";
 
