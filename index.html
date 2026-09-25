@@ -169,7 +169,7 @@ rel="noopener noreferrer"></a>
 <div class="row">
 <button id="prev">⏮ Anterior</button>
 <button id="play">▶ Reproducir</button>
-<button id="ttsPlay">🔊 Voz computarizada</button>
+
 <button id="stop">■ Parar</button>
 <button id="next">Siguiente ⏭</button>
 </div>
@@ -177,6 +177,7 @@ rel="noopener noreferrer"></a>
 <span class="legend" id="recordingLabel">Mi grabación</span>
 <div class="group-content rec-row">
 <button id="record">🎙 Grabar mi voz</button>
+<button id="exportRecording">↗ Exportar audio</button>
 <button id="deleteRecording">🗑 Borrar grabación</button>
 </div>
 </div>
@@ -928,6 +929,62 @@ function toggleRecording(){
  startRecording();
 }
 
+async function exportRecording(){
+ const personal=await getRecording(currentRank);
+
+ if(!personal){
+   alert(translations[currentLanguage].noPersonalRecording);
+   return;
+ }
+
+ const verse=current();
+ if(!verse){
+   alert("No se pudo identificar el verso actual.");
+   return;
+ }
+
+ const reference=(verse.reference || verse.source || ("rank-"+currentRank))
+   .replace(/[\\/:*?"<>|]/g,"_")
+   .replace(/\\s+/g,"_");
+
+ const blobType=personal.type || "audio/webm";
+ const extension=blobType.includes("mp4") || blobType.includes("m4a")
+   ? "m4a"
+   : "webm";
+
+ const fileName=reference+"_Mi_Voz."+extension;
+ const file=new File([personal],fileName,{type:blobType});
+
+ // iPhone/iPad: use the native Share sheet (AirDrop, Mail, Files, etc.)
+ if(navigator.share && navigator.canShare){
+   try{
+     if(navigator.canShare({files:[file]})){
+       await navigator.share({
+         title:reference,
+         text:reference+" — Mi voz",
+         files:[file]
+       });
+       return;
+     }
+   }catch(e){
+     if(e && e.name==="AbortError") return;
+   }
+ }
+
+ // Desktop fallback: force a direct download.
+ const url=URL.createObjectURL(personal);
+ const a=document.createElement("a");
+ a.href=url;
+ a.download=fileName;
+ a.style.display="none";
+ document.body.appendChild(a);
+ a.click();
+
+ setTimeout(()=>{
+   a.remove();
+   URL.revokeObjectURL(url);
+ },1000);
+}
 async function deleteRecording(){
  const personal=await getRecording(currentRank);
 
@@ -993,6 +1050,7 @@ audio.addEventListener("ended",()=>{
 $("play").onclick=playCurrent;
 $("stop").onclick=stopEverything;
 $("record").onclick=toggleRecording;
+$("exportRecording").onclick=exportRecording;
 $("deleteRecording").onclick=deleteRecording;
 $("memorize").onclick=memorize;
 
