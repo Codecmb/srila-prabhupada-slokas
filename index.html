@@ -704,7 +704,7 @@ async function applyFilter(){
    const verseCategory=v.category||category(v.source);
    const inBook=!currentBook || verseCategory===currentBook;
    const matchesSource=inBook && (
-     f==="missing-es" ? !(v.translation_es||"").trim()
+     f==="missing-es" ? (!(v.translation_es||"").trim() || !(v.word_for_word_es||"").trim())
      : f==="needs-fix" ? reviewState==="needs-fix"
      : f==="fixed-local" ? reviewState==="fixed-local"
      : (f==="all" || verseCategory===f));
@@ -750,7 +750,9 @@ async function renderList(){
    d.className="verse-item"+(v.rank===currentRank?" active":"")+
      (reviewState==="needs-fix"?" needs-fix":reviewState==="fixed-local"?" fixed-local":"");
 
-   const spanishDone=!!(v.translation_es||"").trim();
+   const spanishDone=
+     !!(v.translation_es||"").trim() &&
+     !!(v.word_for_word_es||"").trim();
 
    d.textContent=
      (reviewState==="needs-fix" ? "🟡 " : reviewState==="fixed-local" ? "🔵 " : "")+
@@ -791,7 +793,7 @@ async function selectVerse(rank){
  $("rank").textContent=(pos>=0?(pos+1):v.rank)+(currentLanguage==="es"?" de ":" of ")+seq.length+" · #"+String(v.rank).padStart(3,"0");
  $("source").textContent=v.source||"";
 
- const originalUrl=v.original_url || automaticVerseUrl(v.source);
+ const originalUrl=v.reference_url || v.original_url || automaticVerseUrl(v.source);
 
  if(originalUrl){
    $("source").href=originalUrl;
