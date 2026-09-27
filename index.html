@@ -632,12 +632,33 @@ function showPage(id){
  window.scrollTo(0,0);
 }
 function bookItems(key){return verses.filter(v=>(v.category||category(v.source))===key)}
+
+function spanishPending(items){
+ return items.filter(v=>{
+   const translation=(v.translation_es||"").trim();
+   const wordForWord=(v.word_for_word_es||"").trim();
+   return !translation || !wordForWord;
+ }).length;
+}
+
 function renderBooks(){
  const grid=$("bookGrid"); if(!grid)return; grid.innerHTML="";
  BOOKS.forEach(b=>{
-   const n=bookItems(b.key).length;
+   const items=bookItems(b.key);
+   const n=items.length;
+   const pending=spanishPending(items);
    const card=document.createElement("button"); card.className="book-card";
-   card.innerHTML='<span class="arrow">›</span><h2>'+b.label+'</h2><p>'+n+' '+(currentLanguage==="es"?"versos":"verses")+'</p>';
+
+   let status;
+   if(currentLanguage==="es"){
+     status=pending===0
+       ? n+' versos · ✓ Español completo'
+       : n+' versos · '+pending+' pendientes ES';
+   }else{
+     status=n+' verses · '+pending+' Spanish pending';
+   }
+
+   card.innerHTML='<span class="arrow">›</span><h2>'+b.label+'</h2><p>'+status+'</p>';
    card.onclick=()=>openBook(b.key,b.label); grid.appendChild(card);
  });
 }
