@@ -1195,8 +1195,24 @@ async function playCurrent(){
    return;
  }
 
+ const repeatCount=Math.max(1,parseInt($("repeat").value)||1);
+ const pauseTime=Math.max(0,parseFloat($("pause").value)||0)*1000;
+
+ audio.playbackRate=parseFloat($("speed").value);
+
  try{
-   await audio.play();
+   for(let i=0;i<repeatCount;i++){
+     audio.currentTime=0;
+     await audio.play();
+
+     await new Promise(resolve=>{
+       audio.addEventListener("ended",resolve,{once:true});
+     });
+
+     if(i<repeatCount-1 && pauseTime>0){
+       await new Promise(resolve=>setTimeout(resolve,pauseTime));
+     }
+   }
  }catch(e){
    alert(translations[currentLanguage].playError+e.message);
  }
