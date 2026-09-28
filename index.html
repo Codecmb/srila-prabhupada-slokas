@@ -129,6 +129,35 @@ body{background:var(--cream);color:var(--ink)}
 .bottom-nav{position:fixed;left:0;right:0;bottom:0;height:66px;background:var(--indigo);display:flex;z-index:40;padding-bottom:env(safe-area-inset-bottom)}.bottom-nav button{flex:1;border:0;border-radius:0;background:var(--indigo);color:#eee8d8;font-size:20px;padding:7px}.bottom-nav button span{display:block;font-size:11px;margin-top:3px}.bottom-nav button:active{background:var(--indigo-soft)}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
 @media(max-width:750px){.hero-feature{grid-template-columns:1fr;gap:14px;padding:16px}.hero-photo{height:170px}.brand-logo{width:38px;height:38px}.library-main{padding:25px 14px}.hero h1{font-size:30px}.book-grid{grid-template-columns:1fr}.book-card{min-height:105px}.book-tools{top:68px;flex-wrap:wrap}.book-tools input{width:100%;flex-basis:100%}.book-tools select{flex:1}.verse-list-page{margin-top:8px}.player-content{padding:16px 12px 92px}.content{overflow:visible}.row{grid-template-columns:1fr 1fr}.heading{gap:10px}.source{font-size:16px;text-align:right}.app-header{padding-left:12px;padding-right:12px}}
 
+/* Refined study reading area */
+.sloka-label{
+  color:var(--princeton-dark);
+  font-weight:800;
+  margin-bottom:8px;
+}
+
+#verse{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-left:4px solid var(--princeton);
+  border-radius:10px;
+  padding:20px 22px;
+  min-height:0;
+  font-family:Georgia,serif;
+  font-size:23px;
+  line-height:1.7;
+  box-shadow:0 2px 8px #0000000a;
+}
+
+@media(max-width:750px){
+  #verse{
+    min-height:0;
+    padding:17px 16px;
+    font-size:20px;
+    line-height:1.65;
+  }
+}
+
 </style>
 </head>
 
