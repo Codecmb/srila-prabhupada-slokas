@@ -166,6 +166,7 @@ rel="noopener noreferrer"></a>
 
 <div class="study-panel">
 <div class="audio-status" id="audioStatus"></div>
+<div class="audio-status" id="audioCounter">PRUEBA CONTADOR</div>
 <div class="row">
 <button id="prev">⏮ Anterior</button>
 <button id="play">▶ Reproducir</button>
@@ -459,6 +460,49 @@ function openDB(){
    req.onsuccess=()=>resolve(req.result);
    req.onerror=()=>reject(req.error);
  });
+}
+
+async function getAllRecordingRanks(){
+ const db=await openDB();
+
+ return new Promise(resolve=>{
+   const tx=db.transaction(STORE,"readonly");
+   const store=tx.objectStore(STORE);
+   const req=store.getAllKeys();
+
+   req.onsuccess=()=>resolve(req.result.map(String));
+   req.onerror=()=>resolve([]);
+ });
+}
+
+async function refreshAudioCounter(){
+ const total=verses.length;
+ const personalRanks=await getAllRecordingRanks();
+
+ // Set prevents an included + personal audio from being counted twice.
+ const completed=new Set(Object.keys(audioMap).map(String));
+
+ for(const rank of personalRanks)
+   completed.add(String(rank));
+
+ // Only count IDs/ranks that actually belong to the current verse library.
+ const validRanks=new Set(
+   verses.map((v,index)=>String(v.rank ?? v.id ?? index+1))
+ );
+
+ let completedValid=0;
+ for(const rank of completed){
+   if(validRanks.has(rank)) completedValid++;
+ }
+
+ const pending=Math.max(0,total-completedValid);
+
+ const el=$("audioCounter");
+ if(el){
+   el.textContent=currentLanguage==="es"
+     ? `Audios pendientes: ${pending} de ${total}`
+     : `Audio remaining: ${pending} of ${total}`;
+ }
 }
 
 async function getRecording(rank){
@@ -837,6 +881,7 @@ async function getAudioSource(){
 }
 
 async function refreshAudioStatus(){
+ await refreshAudioCounter();
  const personal=await getRecording(currentRank);
 
  if(personal){
